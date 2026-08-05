@@ -1,0 +1,11 @@
+{
+  "source": "http://192.168.10.174:9181/api/v4/users/15/events",
+  "username": "jianjiale",
+  "user_id": "15",
+  "synced_at": "2026-08-05T12:50:14+08:00",
+  "range_start": "2025-08-06",
+  "range_end": "2026-08-05",
+  "events": 413,
+  "contributions": 413,
+  "active_days": 46
+}
