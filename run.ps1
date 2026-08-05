@@ -1,8 +1,3 @@
-# GitLab Heatmap Sync
-
-Windows helper for the weekday 10:00 scheduled task.
-
-```powershell
 $ErrorActionPreference = "Stop"
 $Root = Split-Path -Parent $MyInvocation.MyCommand.Path
 Set-Location $Root
@@ -11,15 +6,14 @@ $logDir = Join-Path $Root "logs"
 New-Item -ItemType Directory -Force -Path $logDir | Out-Null
 $log = Join-Path $logDir ("sync-" + (Get-Date -Format "yyyyMMdd-HHmmss") + ".log")
 
-# Prefer real Python over WindowsApps stub
-$python = @(
+$pythonCandidates = @(
     "$env:LOCALAPPDATA\Python\bin\python.exe",
-    "C:\Users\S703\AppData\Local\Python\bin\python.exe",
-    "python"
-) | Where-Object {
-    if ($_ -eq "python") { return $true }
-    Test-Path $_
-} | Select-Object -First 1
+    "C:\Users\S703\AppData\Local\Python\bin\python.exe"
+)
+$python = $pythonCandidates | Where-Object { Test-Path $_ } | Select-Object -First 1
+if (-not $python) {
+    $python = "python"
+}
 
 function Write-Log([string]$Message) {
     $line = "[{0}] {1}" -f (Get-Date -Format "yyyy-MM-dd HH:mm:ss"), $Message
@@ -29,8 +23,22 @@ function Write-Log([string]$Message) {
 
 Write-Log "start python=$python root=$Root"
 
+# Scheduled tasks sometimes miss User env; reload explicitly
 if (-not $env:GITLAB_TOKEN) {
-    Write-Log "ERROR: GITLAB_TOKEN missing in process environment"
+    $env:GITLAB_TOKEN = [Environment]::GetEnvironmentVariable("GITLAB_TOKEN", "User")
+}
+if (-not $env:GITLAB_URL) {
+    $env:GITLAB_URL = [Environment]::GetEnvironmentVariable("GITLAB_URL", "User")
+}
+if (-not $env:GITLAB_USER_ID) {
+    $env:GITLAB_USER_ID = [Environment]::GetEnvironmentVariable("GITLAB_USER_ID", "User")
+}
+if (-not $env:GITLAB_USERNAME) {
+    $env:GITLAB_USERNAME = [Environment]::GetEnvironmentVariable("GITLAB_USERNAME", "User")
+}
+
+if (-not $env:GITLAB_TOKEN) {
+    Write-Log "ERROR: GITLAB_TOKEN missing in process/user environment"
     exit 1
 }
 
