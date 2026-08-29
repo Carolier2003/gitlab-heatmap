@@ -6,10 +6,10 @@ Auto-synced from [jianjiale](http://192.168.10.174:9181/jianjiale) on weekdays a
 
 | | |
 |---|---|
-| Synced at | `2026-08-28T10:00:03+08:00` |
-| Range | `2025-08-29` → `2026-08-28` |
-| Contributions | **547** |
-| Active days | **61** |
+| Synced at | `2026-08-29T15:39:22+08:00` |
+| Range | `2025-08-30` → `2026-08-29` |
+| Contributions | **563** |
+| Active days | **62** |
 | Peak day | `2026-07-20` (**31**) |
 
 Source: GitLab Events API → daily aggregation (same idea as profile `calendar.json`).
